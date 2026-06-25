@@ -1,0 +1,47 @@
+﻿@model BenhvienSmart.Models.DoctorSchedule
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow border-0">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">Thêm Lịch Trực Mới</h4>
+                </div>
+                <div class="card-body">
+                    <form asp-action="Create">
+                        <div class="mb-3">
+                            <label class="form-label">Chọn Bác sĩ</label>
+                            <select asp-for="DoctorId" class="form-select" asp-items="ViewBag.Doctors"></select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Ngày làm việc</label>
+                            <input asp-for="WorkDate" type="date" class="form-control" />
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Bắt đầu</label>
+                                <input asp-for="StartTime" type="time" class="form-control" />
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Kết thúc</label>
+                                <input asp-for="EndTime" type="time" class="form-control" />
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Ca trực</label>
+                            <select asp-for="Shift" class="form-select">
+                                <option value="Sáng">Sáng</option>
+                                <option value="Chiều">Chiều</option>
+                                <option value="Tối">Tối</option>
+                            </select>
+                        </div>
+                        <div class="mt-4">
+                            <button type="submit" class="btn btn-primary w-100">Lưu lịch trực</button>
+                            <a asp-action="Index" class="btn btn-link w-100 mt-2">Quay lại</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

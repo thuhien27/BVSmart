@@ -1,0 +1,52 @@
+﻿@model BenhvienSmart.Models.Appointment
+
+<div class="container mt-4">
+    <div class="card shadow">
+        <div class="card-header bg-primary text-white">
+            <h4 class="mb-0">Tạo Lịch Hẹn Mới (Nhân viên điều phối)</h4>
+        </div>
+        <div class="card-body">
+            <form asp-action="Create" method="post">
+                <div asp-validation-summary="All" class="text-danger mb-3"></div>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Tên bệnh nhân</label>
+                        <input asp-for="PatientName" class="form-control" required />
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Số điện thoại</label>
+                        <input asp-for="UserId" class="form-control" required />
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Ngày khám</label>
+                        <input asp-for="AppointmentDate" type="datetime-local" class="form-control" required />
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Chọn Bác sĩ (Điều phối ngay)</label>
+                        <select asp-for="DoctorId" class="form-control" asp-items="ViewBag.Doctors">
+                            <option value="">-- Chọn bác sĩ --</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Mức độ ưu tiên (1-5)</label>
+                        <select asp-for="Priority" class="form-control">
+                            <option value="1">1 - Thường</option>
+                            <option value="2">2</option>
+                            <option value="3">3 - Trung bình</option>
+                            <option value="4">4</option>
+                            <option value="5">5 - Cấp cứu</option>
+                        </select>
+                    </div>
+                    <div class="col-12 mb-3">
+                        <label class="form-label">Triệu chứng/Ghi chú</label>
+                        <textarea asp-for="Note" class="form-control" rows="3"></textarea>
+                    </div>
+                </div>
+                <div class="mt-3">
+                    <button type="submit" class="btn btn-success">Lưu lịch hẹn</button>
+                    <a asp-action="Index" class="btn btn-secondary">Quay lại danh sách</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

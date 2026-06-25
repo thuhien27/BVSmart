@@ -1,0 +1,80 @@
+﻿@model BenhvienSmart.Models.Appointment
+
+@{
+    ViewData["Title"] = "Chỉnh sửa lịch khám";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-5">
+            <nav aria-label="breadcrumb" class="mb-4">
+                <ol class="breadcrumb small">
+                    <li class="breadcrumb-item"><a asp-action="MyAppointments" class="text-decoration-none">Lịch khám của tôi</a></li>
+                    <li class="breadcrumb-item active">Chỉnh sửa</li>
+                </ol>
+            </nav>
+
+            <div class="card shadow-lg border-0 rounded-4">
+                <div class="card-header bg-primary bg-gradient text-white py-3 border-0 rounded-top-4">
+                    <h5 class="mb-0 text-center fw-bold">
+                        <i class="bi bi-pencil-square me-2"></i>CẬP NHẬT LỊCH KHÁM
+                    </h5>
+                </div>
+                <div class="card-body p-4">
+                    <form asp-action="EditAppointment" method="post">
+                        <input type="hidden" asp-for="Id" />
+
+                        <div asp-validation-summary="ModelOnly" class="text-danger small mb-3"></div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold small text-muted text-uppercase">Bác sĩ phụ trách</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light border-end-0"><i class="bi bi-person-badge"></i></span>
+                                <select asp-for="DoctorId" class="form-select border-start-0 bg-light shadow-none"
+                                        asp-items="@(new SelectList(ViewBag.Doctors, "Id", "FullName"))">
+                                </select>
+                            </div>
+                            <span asp-validation-for="DoctorId" class="text-danger small"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold small text-muted text-uppercase">Thời gian khám mới</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light border-end-0"><i class="bi bi-calendar-check"></i></span>
+                                <input asp-for="AppointmentDate" type="datetime-local"
+                                       class="form-control border-start-0 bg-light shadow-none"
+                                       min="@DateTime.Now.ToString("yyyy-MM-ddTHH:mm")" />
+                            </div>
+                            <span asp-validation-for="AppointmentDate" class="text-danger small"></span>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label fw-bold small text-muted text-uppercase">Triệu chứng/Ghi chú</label>
+                            <textarea asp-for="Note" class="form-control bg-light shadow-none" rows="4"
+                                      placeholder="Mô tả lại triệu chứng nếu có thay đổi..."></textarea>
+                            <span asp-validation-for="Note" class="text-danger small"></span>
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary fw-bold py-2 rounded-3 shadow-sm">
+                                <i class="bi bi-check-circle me-1"></i>XÁC NHẬN THAY ĐỔI
+                            </button>
+                            <a asp-action="MyAppointments" class="btn btn-outline-secondary py-2 rounded-3">
+                                Hủy bỏ
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="text-center mt-3 text-muted small">
+                <i class="bi bi-info-circle me-1"></i>
+                Lưu ý: Bạn chỉ có thể sửa lịch trước khi khám ít nhất 1 giờ.
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

@@ -1,0 +1,116 @@
+﻿@{
+    ViewData["Title"] = "Lịch Trực Bác Sĩ";
+}
+
+<div class="container-fluid mt-2">
+    <!-- Dùng container-fluid để tràn viền ngang -->
+    <div class="card shadow border-0">
+        <div class="card-header bg-white py-2 d-flex justify-content-between align-items-center">
+            <h5 class="mb-0 fw-bold text-primary"><i class="bi bi-calendar3"></i> WORK SCHEDULE</h5>
+            @if (User.IsInRole("Admin"))
+            {
+                <a asp-action="Create" class="btn btn-primary btn-sm">Thêm lịch mới</a>
+            }
+        </div>
+        <div class="card-body p-0">
+            <!-- Xóa padding để lịch sát viền card -->
+            <div id="calendar"></div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var calendarEl = document.getElementById('calendar');
+            var calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'timeGridWeek',
+
+                // --- THIẾT LẬP VỪA MÀN HÌNH ---
+                height: '80vh', // Lịch chiếm 80% chiều cao màn hình (trừ đi phần header)
+                expandRows: true, // Tự động giãn các hàng cho khít chiều cao
+                handleWindowResize: true,
+                // ------------------------------
+
+                headerToolbar: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'dayGridMonth,timeGridWeek'
+                },
+                locale: 'vi',
+                slotMinTime: '06:00:00',
+                slotMaxTime: '22:00:00', // Thu hẹp khoảng kết thúc để các ô cao hơn
+                allDaySlot: false,
+                slotLabelFormat: {
+                    hour: 'numeric',
+                    minute: '2-digit',
+                    meridiem: 'short'
+                },
+
+                eventSources: [
+                    { url: '/DoctorSchedule/GetScheduleEvents' },
+                    {
+                        events: [
+                            { title: 'CA SÁNG', startTime: '06:00:00', endTime: '12:00:00', display: 'background', backgroundColor: 'rgba(25, 135, 84, 0.05)' },
+                            { title: 'CA CHIỀU', startTime: '12:00:00', endTime: '18:00:00', display: 'background', backgroundColor: 'rgba(13, 110, 253, 0.05)' },
+                            { title: 'CA TỐI', startTime: '18:00:00', endTime: '22:00:00', display: 'background', backgroundColor: 'rgba(245, 158, 11, 0.05)' }
+                        ]
+                    }
+                ],
+
+                eventClick: function(info) {
+    if (info.event.display === 'background') return;
+
+    if ("@User.IsInRole("Admin")" === "True") {
+        // Sử dụng lệnh confirm mặc định của trình duyệt để hỏi Admin
+        var action = confirm("Bấm OK để SỬA lịch trực.\nBấm CANCEL để XÓA lịch trực.");
+
+        if (action) {
+            // Nếu bấm OK -> Đi tới trang Sửa
+            window.location.href = '/DoctorSchedule/Edit/' + info.event.id;
+        } else {
+            // Nếu bấm Cancel -> Hỏi lại lần nữa để Xóa
+            if (confirm("Xác nhận XÓA vĩnh viễn lịch trực này?")) {
+                window.location.href = '/DoctorSchedule/Delete/' + info.event.id;
+            }
+        }
+    } else {
+        alert("Bạn không có quyền thao tác.");
+    }
+}
+            });
+            calendar.render();
+        });
+    </script>
+
+    <style>
+        /* Tối ưu khoảng cách để tiết kiệm diện tích */
+        .card {
+            margin-bottom: 0;
+        }
+
+        /* Kẻ đường đỏ ngăn cách ca */
+        .fc-timegrid-slot[data-time="12:00:00"],
+        .fc-timegrid-slot[data-time="18:00:00"] {
+            border-top: 2px solid #dc3545 !important;
+        }
+
+        /* Chỉnh cỡ chữ nhỏ lại một chút để hiển thị được nhiều nội dung */
+        .fc {
+            font-size: 0.9rem;
+        }
+
+        .fc-event-main {
+            padding: 1px 4px !important;
+            font-weight: 500;
+        }
+
+        /* Ẩn thanh cuộn ngang nếu không cần thiết */
+        body {
+            overflow-x: hidden;
+        }
+    </style>
+}

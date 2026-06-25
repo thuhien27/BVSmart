@@ -1,0 +1,45 @@
+﻿@model IEnumerable<BenhvienSmart.Models.Appointment>
+
+<div class="card shadow mb-4">
+    <div class="card-header py-3 bg-primary text-white d-flex justify-content-between">
+        <h6 class="m-0 font-weight-bold">QUẢN LÝ VÀ ĐIỀU PHỐI LỊCH KHÁM</h6>
+        <a href="/Staff/Create" class="btn btn-light btn-sm">Thêm Lịch Hẹn Mới</a>
+    </div>
+    <div class="card-body">
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Bệnh nhân</th>
+                    <th>Thời gian</th>
+                    <th>Bác sĩ hiện tại</th>
+                    <th>Phòng</th>
+                    <th>Hành động điều phối</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td><strong>@item.PatientName</strong></td>
+                        <td>@item.AppointmentDate.ToString("dd/MM HH:mm")</td>
+                        <td>@(item.Doctor?.FullName ?? "Chưa gán bác sĩ")</td>
+                        <td><span class="badge bg-info text-white">@item.ExaminationRoom</span></td>
+                        <td>
+                            <form asp-action="AssignDoctor" method="post" class="row g-2">
+                                <input type="hidden" name="appointmentId" value="@item.Id" />
+                                <div class="col-8">
+                                    <select name="doctorId" class="form-select form-select-sm" asp-items="ViewBag.Doctors">
+                                        <option value="">-- Chọn bác sĩ để gán --</option>
+                                    </select>
+                                </div>
+                                <div class="col-4">
+                                    <button type="submit" class="btn btn-success btn-sm w-100">Gán</button>
+                                </div>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

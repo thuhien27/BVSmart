@@ -1,0 +1,102 @@
+﻿@model BenhvienSmart.Models.DoctorSchedule
+
+@{
+    ViewData["Title"] = "Chỉnh sửa lịch trực";
+}
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow border-0">
+                <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                    <h4 class="mb-0"><i class="bi bi-pencil-square"></i> Cập Nhật Lịch Trực Bác Sĩ</h4>
+                    <!-- Nút xóa nhanh ở header -->
+                    <button type="button" class="btn btn-danger btn-sm" onclick="confirmDelete()">
+                        <i class="bi bi-trash"></i> Xóa lịch này
+                    </button>
+                </div>
+                <div class="card-body p-4">
+                    <form asp-action="Edit" id="editForm">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        <input type="hidden" asp-for="Id" id="scheduleId" />
+
+                        <div class="row mb-3">
+                            <div class="col-md-12">
+                                <label asp-for="DoctorId" class="form-label fw-bold">Bác sĩ phụ trách</label>
+                                <select asp-for="DoctorId" class="form-select" asp-items="ViewBag.DoctorId"></select>
+                                <span asp-validation-for="DoctorId" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label asp-for="WorkDate" class="form-label fw-bold">Ngày trực</label>
+                                <input asp-for="WorkDate" type="date" class="form-control" />
+                                <span asp-validation-for="WorkDate" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-6">
+                                <label asp-for="Shift" class="form-label fw-bold">Ca trực</label>
+                                <select asp-for="Shift" class="form-select">
+                                    <option value="Sáng">Sáng</option>
+                                    <option value="Chiều">Chiều</option>
+                                    <option value="Tối">Tối</option>
+                                </select>
+                                <span asp-validation-for="Shift" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label asp-for="StartTime" class="form-label fw-bold">Giờ bắt đầu</label>
+                                <input asp-for="StartTime" type="time" class="form-control" />
+                                <span asp-validation-for="StartTime" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-6">
+                                <label asp-for="EndTime" class="form-label fw-bold">Giờ kết thúc</label>
+                                <input asp-for="EndTime" type="time" class="form-control" />
+                                <span asp-validation-for="EndTime" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <label asp-for="MaxPatients" class="form-label fw-bold">Số BN tối đa</label>
+                                <input asp-for="MaxPatients" class="form-control" placeholder="Ví dụ: 20" />
+                                <span asp-validation-for="MaxPatients" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-6 d-flex align-items-end">
+                                <div class="form-check form-switch mb-2">
+                                    <input class="form-check-input" type="checkbox" asp-for="IsAvailable">
+                                    <label class="form-check-label fw-bold" asp-for="IsAvailable">Trạng thái sẵn sàng</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-primary px-4">
+                                <i class="bi bi-save"></i> Lưu thay đổi
+                            </button>
+
+                            <a asp-action="Index" class="btn btn-outline-secondary px-4">
+                                Quay lại danh sách
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    <script>function confirmDelete() {
+            const id = document.getElementById('scheduleId').value;
+            if (confirm("Bạn có chắc chắn muốn xóa vĩnh viễn lịch trực này không? Thao tác này không thể hoàn tác.")) {
+                // Chuyển hướng đến Action Delete trong Controller
+                // Lưu ý: Đảm bảo tên Controller là DoctorSchedule
+                window.location.href = '/DoctorSchedule/Delete/' + id;
+            }
+        }</script>
+}

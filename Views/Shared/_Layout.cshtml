@@ -1,0 +1,296 @@
+﻿@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor HttpContextAccessor
+@{
+    var currentRole = HttpContextAccessor.HttpContext?.Session?.GetString("UserRole");
+    var userName = HttpContextAccessor.HttpContext?.Session?.GetString("UserName");
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - BenhvienSmart</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <style>
+        .nav-link:hover {
+            color: #0d6efd !important;
+        }
+
+        .navbar-brand {
+            letter-spacing: 1px;
+        }
+
+        /* Tùy chỉnh thêm cho Chatbot */
+        #chat-body::-webkit-scrollbar {
+            width: 5px;
+        }
+
+        #chat-body::-webkit-scrollbar-thumb {
+            background: #0d6efd;
+            border-radius: 10px;
+        }
+
+        .chat-bubble-ai {
+            border-radius: 15px 15px 15px 0;
+        }
+
+        .chat-bubble-user {
+            border-radius: 15px 15px 0 15px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-light bg-white border-bottom shadow-sm mb-3">
+            <div class="container-fluid px-4">
+                <a class="navbar-brand fw-bold text-primary" asp-controller="Home" asp-action="Index">
+                    <i class="bi bi-heart-pulse-fill"></i> BVSmart
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                    <ul class="navbar-nav align-items-center">
+                        <li class="nav-item"><a class="nav-link text-dark" asp-controller="Home" asp-action="About">Giới thiệu</a></li>
+                        <li class="nav-item"><a class="nav-link text-dark" asp-controller="News" asp-action="Index">Tin tức</a></li>
+                        @if (currentRole == "Admin")
+                        {
+                            <li class="nav-item dropdown border-start ps-3 ms-2">
+                                <a class="nav-link dropdown-toggle text-primary fw-bold" href="#" id="adminManage" role="button" data-bs-toggle="dropdown">
+                                    <i class="bi bi-kanban me-1"></i> Quản lý
+                                </a>
+                                <ul class="dropdown-menu shadow border-0 mt-2">
+                                    <li><a class="dropdown-item py-2" asp-controller="Home" asp-action="Index"><i class="bi bi-speedometer2 me-2"></i> Dashboard</a></li>
+                                    <li><hr class="dropdown-divider"></li>
+
+                                    @* Ai cũng thấy các mục cơ bản *@
+                                    <li><a class="dropdown-item py-2" asp-controller="Doctor" asp-action="Index"><i class="bi bi-person-badge me-2"></i> Bác sĩ</a></li>
+                                    <li><a class="dropdown-item py-2" asp-controller="Department" asp-action="Index"><i class="bi bi-hospital me-2"></i> Chuyên khoa</a></li>
+                                    <li><a class="dropdown-item py-2" asp-controller="News" asp-action="AdminIndex"><i class="bi bi-newspaper me-2"></i> Quản lý tin</a></li>
+
+                                    @* PHÂN QUYỀN CHO LỊCH TRỰC: Admin và Doctor mới thấy *@
+                                    @if (User.IsInRole("Admin") || User.IsInRole("Doctor"))
+                                    {
+                                        <li><a class="dropdown-item py-2" asp-controller="DoctorSchedule" asp-action="Index"><i class="bi bi-calendar3 me-2"></i> Lịch trực bác sĩ</a></li>
+                                    }
+
+                                    @* PHÂN QUYỀN CHO TÀI KHOẢN: Chỉ Admin mới thấy *@
+                                    @if (User.IsInRole("Admin"))
+                                    {
+                                        <li><a class="dropdown-item py-2" asp-controller="Admin" asp-action="ManageUsers"><i class="bi bi-people me-2"></i> Quản lý tài khoản</a></li>
+                                        <li><a class="dropdown-item py-2" asp-controller="Patient" asp-action="Index"><i class="bi bi-person-heart me-2"></i> Bệnh nhân</a></li>
+                                    }
+
+                                    <li><a class="dropdown-item py-2" asp-controller="Appointment" asp-action="Index"><i class="bi bi-calendar-check me-2"></i> Lịch khám</a></li>
+                                </ul>
+                            </li>
+                        }
+                    </ul>
+                    @* --- THÊM MỚI: KHỐI MENU DÀNH RIÊNG CHO BÁC SĨ (KHÔNG ẢNH HƯỞNG ADMIN) --- *@
+                    @if (currentRole == "Doctor")
+                    {
+                        <li class="nav-item dropdown border-start ps-3 ms-2">
+                            <a class="nav-link dropdown-toggle text-success fw-bold" href="#" id="doctorMenu" role="button" data-bs-toggle="dropdown">
+                                <i class="bi bi-stethoscope me-1"></i> Nghiệp vụ Bác sĩ
+                            </a>
+                            <ul class="dropdown-menu shadow border-0 mt-2">
+                                <li><a class="dropdown-item py-2" asp-controller="Doctor" asp-action="Dashboard"><i class="bi bi-grid-1x2-fill me-2"></i> Dashboard</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item py-2" asp-controller="Appointment" asp-action="Index"><i class="bi bi-calendar2-check me-2"></i> Lịch khám </a></li>
+                                <li><a class="dropdown-item py-2" asp-controller="Patient" asp-action="Index"><i class="bi bi-people-fill me-2"></i> Bệnh nhân</a></li>
+                                <li><a class="dropdown-item py-2" asp-controller="DoctorSchedule" asp-action="Index"><i class="bi bi-calendar3-range me-2"></i> Lịch trực</a></li>
+                            </ul>
+                        </li>
+                    }
+                    <div class="d-flex align-items-center mt-2 mt-sm-0">
+                        @if (currentRole == "Admin")
+                        {
+                            <a class="nav-link text-danger fw-bold me-4" asp-controller="System" asp-action="Settings" title="Cài đặt hệ thống">
+                                <i class="bi bi-gear-fill me-1"></i> Cài đặt hệ thống
+                            </a>
+                        }
+                        @if (!string.IsNullOrEmpty(currentRole))
+                        {
+                            <div class="dropdown">
+                                <button class="btn btn-outline-secondary dropdown-toggle border-0" type="button" data-bs-toggle="dropdown">
+                                    <i class="bi bi-person-circle text-primary me-1"></i> @(userName ?? "Tài khoản")
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-end shadow border-0 mt-2">
+                                    <li><span class="dropdown-item-text small text-muted text-center bg-light mb-1">Vai trò: @currentRole</span></li>
+                                    <li><a class="dropdown-item" asp-controller="Home" asp-action="Profile"><i class="bi bi-person me-2"></i> Hồ sơ</a></li>
+                                    <li><a class="dropdown-item" asp-controller="Home" asp-action="ChangePassword"><i class="bi bi-key me-2"></i> Đổi mật khẩu</a></li>
+                                    <li><a class="dropdown-item py-2" asp-controller="Home" asp-action="MyAppointments"><i class="bi bi-calendar-check me-2"></i> Lịch khám của tôi</a></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li><a class="dropdown-item text-danger" asp-controller="Home" asp-action="Logout"><i class="bi bi-box-arrow-right me-2"></i> Đăng xuất</a></li>
+                                </ul>
+                            </div>
+                        }
+                        else
+                        {
+                            <a class="btn btn-outline-primary btn-sm me-2 rounded-pill px-3" asp-controller="Home" asp-action="Login">Đăng nhập</a>
+                            <a class="btn btn-primary btn-sm rounded-pill px-3 shadow-sm" asp-controller="Home" asp-action="Register">Đăng ký</a>
+                        }
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <div class="container">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    <div id="smart-chat" style="position:fixed; bottom:20px; right:20px; z-index:9999;">
+        <button onclick="toggleChat()" class="btn btn-primary rounded-circle shadow-lg d-flex align-items-center justify-content-center" style="width:60px; height:60px;">
+            <i class="fa-solid fa-robot fs-4"></i>
+        </button>
+
+        <div id="chat-window" class="card shadow-lg border-0" style="display:none; width:350px; position:absolute; bottom:75px; right:0; border-radius:15px; overflow:hidden;">
+            <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center py-3">
+                <h6 class="mb-0"><i class="fa-solid fa-wand-magic-sparkles me-2"></i>Trợ lý ảo BVSmart</h6>
+                <button type="button" class="btn-close btn-close-white" onclick="toggleChat()"></button>
+            </div>
+            <div id="chat-body" class="card-body" style="height:350px; overflow-y:auto; background:#f0f2f5; padding:15px;">
+                <div class='alert alert-white bg-white shadow-sm chat-bubble-ai mb-3'>
+                    <b>AI:</b> Chào bạn! Hãy nhập triệu chứng, tôi sẽ gợi ý chuyên khoa phù hợp cho bạn.
+                </div>
+            </div>
+            <div class="card-footer bg-white border-top-0 p-3">
+                <div class="input-group">
+                    <input type="text" id="user-msg" class="form-control bg-light border-0 py-2" placeholder="Nhập triệu chứng..." style="border-radius:20px 0 0 20px;">
+                    <button onclick="sendMessage()" class="btn btn-primary px-3" style="border-radius:0 20px 20px 0;">
+                        <i class="fa-solid fa-paper-plane"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <footer class="border-top footer bg-light mt-5 pt-4 pb-2">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-4 text-center text-md-start mb-3 mb-md-0">
+                    <span class="fw-bold fs-5 text-primary"><i class="bi bi-hospital me-2"></i>BenhvienSmart</span>
+                    <p class="small text-muted mb-0">Hệ thống chăm sóc sức khỏe 4.0</p>
+                </div>
+                <div class="col-md-4 text-center mb-3 mb-md-0">
+                    <ul class="list-inline mb-0 d-flex justify-content-center flex-wrap">
+                        <li class="list-inline-item px-2"><a class="text-decoration-none text-secondary small fw-medium" asp-controller="Home" asp-action="Guide">Hướng dẫn</a></li>
+                        <li class="list-inline-item px-2"><a class="text-decoration-none text-secondary small fw-medium" asp-controller="Home" asp-action="Privacy">Bảo mật</a></li>
+                        <li class="list-inline-item px-2"><a class="text-decoration-none text-secondary small fw-medium" asp-controller="Home" asp-action="Contact">Góp ý</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-4 text-center text-md-end">
+                    <a href="#" class="text-secondary mx-2"><i class="bi bi-facebook"></i></a>
+                    <a href="#" class="text-secondary mx-2"><i class="bi bi-youtube"></i></a>
+                    <a href="#" class="text-secondary mx-2"><i class="bi bi-telephone-fill"></i></a>
+                </div>
+            </div>
+            <hr class="my-3 opacity-25">
+            <div class="text-center text-muted" style="font-size: 0.8rem;">
+                &copy; 2026 - <span class="fw-bold">BenhvienSmart</span> - Chăm sóc sức khỏe thông minh bằng cả trái tim
+            </div>
+        </div>
+    </footer>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+
+    <script>
+        function toggleChat() {
+            $("#chat-window").fadeToggle(300, function () {
+                // Nếu mở cửa sổ và chưa có tin nhắn nào, Bot sẽ chủ động chào
+                if ($("#chat-window").is(":visible") && $("#chat-body").children().length <= 1) {
+                    let welcomeMsg = "Kính chào quý khách! Tôi là trợ lý y tế thông minh của BVSmart. 🤖\n\nBạn đang gặp vấn đề gì về sức khỏe hoặc cần tìm thông tin về phòng khám nào không?";
+                    appendBotMessage(welcomeMsg);
+                }
+            });
+        }
+
+        function appendBotMessage(msg) {
+            let formatted = msg.replace(/\n/g, "<br/>");
+            $("#chat-body").append(`<div class='mb-3'><div class='d-inline-block bg-white p-2 shadow-sm chat-bubble-ai'><b>AI:</b> ${formatted}</div></div>`);
+            $("#chat-body").scrollTop($("#chat-body")[0].scrollHeight);
+        }
+
+        $(document).ready(function () {
+            // Nhấn Enter để gửi
+            $("#user-msg").keypress(function (e) {
+                if (e.which == 13) {
+                    sendMessage();
+                    return false;
+                }
+            });
+        });
+
+        function sendMessage() {
+            let msg = $("#user-msg").val();
+            if (!msg) return;
+
+            // Tin nhắn user
+            $("#chat-body").append(`
+        <div class='text-end mb-3'>
+            <div class='d-inline-block bg-primary text-white p-2 shadow-sm chat-bubble-user'>
+                ${msg}
+            </div>
+        </div>`);
+
+            $("#user-msg").val("");
+
+            // Loading
+            let tempId = "typing-" + Date.now();
+            $("#chat-body").append(`
+        <div id='${tempId}' class='mb-3'>
+            <div class='d-inline-block bg-white p-2 shadow-sm chat-bubble-ai'>
+                <i class='fas fa-spinner fa-spin'></i> Đang phân tích triệu chứng...
+            </div>
+        </div>`);
+
+            $("#chat-body").scrollTop($("#chat-body")[0].scrollHeight);
+
+            $.ajax({
+                url: "/api/Chatbot/predict",
+                type: "POST",
+                contentType: "application/json",
+                data: JSON.stringify({ Symptoms: msg }),
+
+                success: function (data) {
+                    $(`#${tempId}`).remove();
+
+                    let result = data.result || "Không có phản hồi từ AI";
+
+                    let formatted = result.replace(/\n/g, "<br/>");
+
+                    $("#chat-body").append(`
+                <div class='mb-3'>
+                    <div class='d-inline-block bg-white p-2 shadow-sm chat-bubble-ai'>
+                        <b>AI:</b> ${formatted}
+                    </div>
+                </div>`);
+
+                    $("#chat-body").scrollTop($("#chat-body")[0].scrollHeight);
+                },
+
+                error: function (err) {
+                    $(`#${tempId}`).remove();
+
+                    $("#chat-body").append(`
+                <div class='text-danger mb-3'>
+                    ❌ Lỗi kết nối AI
+                </div>`);
+
+                    console.error(err);
+                }
+            });
+        }</script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

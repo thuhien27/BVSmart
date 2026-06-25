@@ -1,0 +1,68 @@
+﻿@model BenhvienSmart.Models.Department
+
+@{
+    ViewData["Title"] = "Thêm Chuyên khoa mới";
+}
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow border-0">
+                <div class="card-header bg-success text-white">
+                    <h4 class="mb-0"><i class="bi bi-plus-circle"></i> Thêm Chuyên khoa mới</h4>
+                </div>
+                <div class="card-body p-4">
+
+                    <div class="mb-4">
+                        <label class="form-label fw-bold text-muted small text-uppercase">Gợi ý nhanh:</label>
+                        <div class="d-flex flex-wrap gap-2">
+                            <button type="button" class="btn btn-outline-primary btn-sm suggestion-btn" data-name="Nội tổng quát" data-desc="Khám và điều trị các bệnh lý nội khoa chung cho người lớn.">Nội tổng quát</button>
+                            <button type="button" class="btn btn-outline-primary btn-sm suggestion-btn" data-name="Ngoại tổng quát" data-desc="Phẫu thuật các bệnh lý ổ bụng, tiêu hóa và các can thiệp ngoại khoa.">Ngoại tổng quát</button>
+                            <button type="button" class="btn btn-outline-primary btn-sm suggestion-btn" data-name="Nhi khoa" data-desc="Chăm sóc sức khỏe và điều trị bệnh cho trẻ em dưới 16 tuổi.">Nhi khoa</button>
+                            <button type="button" class="btn btn-outline-primary btn-sm suggestion-btn" data-name="Sản phụ khoa" data-desc="Quản lý thai kỳ, sinh con và điều trị các bệnh lý phụ khoa.">Sản phụ khoa</button>
+                            <button type="button" class="btn btn-outline-primary btn-sm suggestion-btn" data-name="Tai Mũi Họng" data-desc="Khám và điều trị các bệnh lý vùng tai, mũi và họng.">Tai Mũi Họng</button>
+                            <button type="button" class="btn btn-outline-primary btn-sm suggestion-btn" data-name="Răng Hàm Mặt" data-desc="Khám, điều trị răng miệng và phẫu thuật hàm mặt.">Răng Hàm Mặt</button>
+                            <button type="button" class="btn btn-outline-primary btn-sm suggestion-btn" data-name="Tim mạch" data-desc="Chẩn đoán và điều trị chuyên sâu các bệnh lý về tim và mạch máu.">Tim mạch</button>
+                            <button type="button" class="btn btn-outline-primary btn-sm suggestion-btn" data-name="Da liễu" data-desc="Điều trị các bệnh về da, thẩm mỹ da và bệnh lây qua đường tình dục.">Da liễu</button>
+                        </div>
+                    </div>
+
+                    <form asp-action="Create" method="post">
+                        @Html.AntiForgeryToken()
+
+                        <div class="mb-3">
+                            <label asp-for="Name" class="form-label fw-bold">Tên Chuyên khoa</label>
+                            <input asp-for="Name" id="deptName" class="form-control" placeholder="Nhập tên khoa hoặc chọn gợi ý..." required />
+                            <span asp-validation-for="Name" class="text-danger small"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Description" class="form-label fw-bold">Mô tả</label>
+                            <textarea asp-for="Description" id="deptDesc" class="form-control" rows="3" placeholder="Mô tả sẽ tự động điền nếu chọn gợi ý..."></textarea>
+                            <span asp-validation-for="Description" class="text-danger small"></span>
+                        </div>
+
+                        <div class="d-grid gap-2 mt-4">
+                            <button type="submit" class="btn btn-success btn-lg">Lưu chuyên khoa</button>
+                            <a asp-action="Index" class="btn btn-outline-secondary">Quay lại danh sách</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>// Script xử lý khi nhấn vào nút gợi ý
+        document.querySelectorAll('.suggestion-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                const name = this.getAttribute('data-name');
+                const desc = this.getAttribute('data-desc');
+
+                document.getElementById('deptName').value = name;
+                document.getElementById('deptDesc').value = desc;
+            });
+        });</script>
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

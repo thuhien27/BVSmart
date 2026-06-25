@@ -1,0 +1,125 @@
+﻿@model BenhvienSmart.Models.Appointment
+
+@{
+    ViewData["Title"] = "Chỉnh sửa lịch khám";
+}
+
+<div class="container mt-4">
+    <div class="d-flex align-items-center mb-3">
+        <h2 class="text-primary"><i class="bi bi-pencil-square"></i> Cập nhật lịch khám</h2>
+    </div>
+    <hr />
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card shadow-sm border-0">
+                <div class="card-body p-4">
+                    <form asp-action="Edit" id="bookingForm">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                        <!-- QUAN TRỌNG: Lưu ID của lịch khám để hệ thống biết cần cập nhật bản ghi nào -->
+                        <input type="hidden" asp-for="Id" />
+                        <input type="hidden" asp-for="UserId" />
+
+                        <div class="form-group mb-3">
+                            <label class="fw-bold">Họ tên bệnh nhân</label>
+                            <input asp-for="PatientName" class="form-control" placeholder="Nhập tên bệnh nhân..." required />
+                            <span asp-validation-for="PatientName" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label class="fw-bold">Bác sĩ phụ trách</label>
+                            <select asp-for="DoctorId" class="form-select" id="doctorSelect" asp-items="ViewBag.DoctorId">
+                                <option value="">-- Chọn bác sĩ --</option>
+                            </select>
+                            <span asp-validation-for="DoctorId" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label class="fw-bold">Thời gian khám</label>
+                            <input asp-for="AppointmentDate" class="form-control" type="datetime-local" id="dateInput" />
+                            <span asp-validation-for="AppointmentDate" class="text-danger"></span>
+                        </div>
+
+                        <!-- Khu vực gợi ý thông minh (Giữ nguyên từ Create) -->
+                        <div id="smartSuggestion" class="alert alert-warning d-none shadow-sm border-start border-warning border-4">
+                            <div id="timeSuggestionArea" class="mb-2">
+                                <i class="bi bi-clock-history"></i> <span id="suggestionText"></span>
+                                <button type="button" class="btn btn-sm btn-dark ms-2" id="applyBtn">Sử dụng giờ này</button>
+                            </div>
+
+                            <div id="doctorSuggestionArea" class="border-top pt-2 d-none">
+                                <i class="bi bi-person-plus-fill text-primary"></i>
+                                <span>Bác sĩ <b id="altDoctorName"></b> đang rảnh vào giờ bạn chọn.</span>
+                                <button type="button" class="btn btn-sm btn-outline-primary ms-2" id="applyAltDoctorBtn">Đổi bác sĩ</button>
+                            </div>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label class="fw-bold">Mức độ ưu tiên (1-5)</label>
+                            <input asp-for="Priority" class="form-control" min="1" max="5" />
+                            <small class="text-muted">Hệ thống sẽ dựa vào mức độ này để sắp xếp thứ tự khám.</small>
+                            <span asp-validation-for="Priority" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group mb-4">
+                            <label class="fw-bold">Trạng thái lịch khám</label>
+                            <select asp-for="Status" class="form-select" asp-items="Html.GetEnumSelectList<BenhvienSmart.Models.AppointmentStatus>()">
+                            </select>
+                        </div>
+
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-primary w-100">
+                                <i class="bi bi-save"></i> Lưu thay đổi
+                            </button>
+                            <a asp-action="Index" class="btn btn-outline-secondary w-50">Hủy</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>$(document).ready(function () {
+            // Tái sử dụng logic kiểm tra lịch trống của bạn
+            $('#dateInput, #doctorSelect').on('change', function () {
+                var doctorId = $('#doctorSelect').val();
+                var date = $('#dateInput').val();
+
+                if (doctorId && date) {
+                    $.get('/Appointment/CheckAvailability', { doctorId: doctorId, requestedTime: date }, function (res) {
+                        if (!res.available) {
+                            $('#smartSuggestion').removeClass('d-none');
+                            $('#suggestionText').text("Khung giờ này bác sĩ đã có lịch. Gợi ý: " + res.suggestedTime);
+                            $('#applyBtn').data('time', res.suggestedTimeRaw);
+
+                            if (res.altDoctorName) {
+                                $('#doctorSuggestionArea').removeClass('d-none');
+                                $('#altDoctorName').text(res.altDoctorName);
+                                $('#applyAltDoctorBtn').data('docid', res.altDoctorId);
+                            } else {
+                                $('#doctorSuggestionArea').addClass('d-none');
+                            }
+                        } else {
+                            $('#smartSuggestion').addClass('d-none');
+                        }
+                    });
+                }
+            });
+
+            $('#applyBtn').click(function () {
+                $('#dateInput').val($(this).data('time'));
+                $('#smartSuggestion').addClass('d-none');
+            });
+
+            $(document).on('click', '#applyAltDoctorBtn', function () {
+                var docId = $(this).data('docid');
+                $('#doctorSelect').val(docId);
+                $('#smartSuggestion').addClass('d-none');
+                $('#doctorSelect').trigger('change');
+            });
+        });</script>
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

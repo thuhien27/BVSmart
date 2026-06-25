@@ -1,0 +1,136 @@
+﻿@model IEnumerable<BenhvienSmart.Models.Appointment>
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2>📅 Danh sách lịch khám</h2>
+        <a asp-action="Create" class="btn btn-primary">➕ Đặt lịch mới</a>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <table class="table table-hover align-middle">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Bệnh nhân</th>
+                        <th>Bác sĩ</th>
+                        <th>Thời gian</th>
+                        <th>Độ ưu tiên</th>
+                        <th>Trạng thái</th>
+                        <th>Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model != null && Model.Any())
+                    {
+                        foreach (var item in Model)
+                        {
+                            // Smart Logic: Tự động đổi màu dòng dựa trên mức độ ưu tiên
+                            // Priority = 5: Đỏ đậm (Nguy cấp)
+                            // Priority = 4: Vàng (Ưu tiên)
+                            string rowClass = item.Priority == 5 ? "table-danger fw-bold border-start border-danger border-5" :
+                                              item.Priority == 4 ? "table-warning" : "";
+
+                            <tr class="@rowClass">
+                                <td>
+                                    <strong>@item.PatientName</strong>
+                                    @if (item.Priority == 5)
+                                    {
+                                        <span class="badge bg-dark ms-1 pulse-animation">🚨 KHẨN CẤP</span>
+                                    }
+                                </td>
+                                <td>
+                                    @if (item.Doctor != null)
+                                    {
+                                        <span class="fw-bold text-dark">
+                                            <i class="bi bi-person-check"></i> @item.Doctor.FullName
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted fst-italic">
+                                            <i class="bi bi-hourglass-split"></i> Đang chờ phân bổ
+                                        </span>
+                                    }
+                                </td>
+                                <td>@item.AppointmentDate.ToString("HH:mm - dd/MM/yyyy")</td>
+                                <td>
+                                    <div class="progress" style="height: 6px; width: 60px;">
+                                        <div class="progress-bar bg-danger" style="width: @(item.Priority * 20)%"></div>
+                                    </div>
+                                    <small class="text-muted">Cấp @item.Priority</small>
+                                </td>
+                                <td>
+                                    @if (item.Status == BenhvienSmart.Models.AppointmentStatus.Completed)
+                                    {
+                                        <span class="badge bg-success">Đã khám</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-secondary">Chờ khám</span>
+                                    }
+                                </td>
+                                <td class="text-nowrap">
+                                    <div class="btn-group" role="group">
+                                        <!-- Nút Chi tiết/Xử lý -->
+                                        <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-outline-info" title="Chi tiết">
+                                            <i class="bi bi-file-earmark-medical"></i>
+                                        </a>
+
+                                        <!-- Nút Sửa -->
+                                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary" title="Chỉnh sửa">
+                                            <i class="bi bi-pencil-square"></i>
+                                        </a>
+
+                                        <!-- Nút Xóa (Sử dụng Form để bảo mật và xác nhận) -->
+                                        @if (User.IsInRole("Admin"))
+                                        {
+                                            <form asp-action="Delete" asp-route-id="@item.Id" method="post"
+                                                  onsubmit="return confirm('Bạn có chắc chắn muốn xóa lịch khám của bệnh nhân @item.PatientName?');"
+                                                  style="display:inline;">
+                                                @Html.AntiForgeryToken()
+                                                <button type="submit" class="btn btn-sm btn-outline-danger" title="Xóa">
+                                                    <i class="bi bi-trash"></i>
+                                                </button>
+                                            </form>
+                                        }
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="6" class="text-center text-muted p-4">Chưa có lịch khám nào được đặt.</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Hiệu ứng nhấp nháy cho ca khẩn cấp */
+    .pulse-animation {
+        animation: pulse-red 2s infinite;
+    }
+
+    @@keyframes pulse-red {
+        0% {
+            opacity: 1;
+        }
+
+        50% {
+            opacity: 0.5;
+        }
+
+        100% {
+            opacity: 1;
+        }
+    }
+
+    .border-5 {
+        border-left-width: 5px !important;
+    }
+</style>

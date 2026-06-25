@@ -1,0 +1,102 @@
+﻿@model BenhvienSmart.Models.Appointment
+
+@{ ViewData["Title"] = "Đặt lịch khám mới"; }
+
+<div class="container mt-4">
+    <h2>🎯 Đặt lịch khám thông minh</h2>
+    <hr />
+    <div class="row">
+        <div class="col-md-6">
+            <form asp-action="Create" id="bookingForm">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                <div class="form-group mb-3">
+                    <label>Họ tên bệnh nhân</label>
+                    <input asp-for="PatientName" class="form-control" placeholder="Nhập tên bệnh nhân..." required />
+                </div>
+
+                <div class="form-group mb-3">
+                    <label>Bác sĩ</label>
+                    <select asp-for="DoctorId" class="form-control" id="doctorSelect" asp-items="ViewBag.DoctorId">
+                        <option value="">-- Chọn bác sĩ --</option>
+                    </select>
+                </div>
+
+                <div class="form-group mb-3">
+                    <label>Thời gian dự kiến</label>
+                    <input asp-for="AppointmentDate" class="form-control" type="datetime-local" id="dateInput" />
+                </div>
+
+                <div id="smartSuggestion" class="alert alert-warning d-none shadow-sm border-start border-warning border-4">
+                    <div id="timeSuggestionArea" class="mb-2">
+                        <i class="bi bi-clock-history"></i> <span id="suggestionText"></span>
+                        <button type="button" class="btn btn-sm btn-dark ms-2" id="applyBtn">Đồng ý giờ này</button>
+                    </div>
+
+                    <div id="doctorSuggestionArea" class="border-top pt-2 d-none">
+                        <i class="bi bi-person-plus-fill text-primary"></i>
+                        <span>Bác sĩ <b id="altDoctorName"></b> cũng đang rảnh.</span>
+                        <button type="button" class="btn btn-sm btn-outline-primary ms-2" id="applyAltDoctorBtn">Chọn bác sĩ này</button>
+                    </div>
+                </div>
+
+                <div class="form-group mb-3">
+                    <label>Mức độ ưu tiên (1-5)</label>
+                    <input asp-for="Priority" class="form-control" min="1" max="5" value="1" />
+                    <small class="text-muted">Mức 5 là khẩn cấp nhất</small>
+                </div>
+
+                <button type="submit" class="btn btn-success w-100">Xác nhận đặt lịch</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>$(document).ready(function () {
+            // Lắng nghe thay đổi Ngày hoặc Bác sĩ
+            $('#dateInput, #doctorSelect').on('change', function () {
+                var doctorId = $('#doctorSelect').val();
+                var date = $('#dateInput').val();
+
+                if (doctorId && date) {
+                    $.get('/Appointment/CheckAvailability', { doctorId: doctorId, requestedTime: date }, function (res) {
+                        if (!res.available) {
+                            $('#smartSuggestion').removeClass('d-none');
+
+                            // 1. Hiển thị gợi ý giờ khác
+                            $('#suggestionText').text("Khung giờ này đã kín. Gợi ý: " + res.suggestedTime);
+                            $('#applyBtn').data('time', res.suggestedTimeRaw);
+
+                            // 2. Hiển thị gợi ý bác sĩ khác (Nếu có)
+                            if (res.altDoctorName) {
+                                $('#doctorSuggestionArea').removeClass('d-none');
+                                $('#altDoctorName').text(res.altDoctorName);
+                                $('#applyAltDoctorBtn').data('docid', res.altDoctorId);
+                            } else {
+                                $('#doctorSuggestionArea').addClass('d-none');
+                            }
+                        } else {
+                            $('#smartSuggestion').addClass('d-none');
+                        }
+                    });
+                }
+            });
+
+            // Xử lý khi nhấn "Đồng ý giờ này"
+            $('#applyBtn').click(function () {
+                $('#dateInput').val($(this).data('time'));
+                $('#smartSuggestion').addClass('d-none');
+            });
+
+            // Xử lý khi nhấn "Chọn bác sĩ này"
+            $(document).on('click', '#applyAltDoctorBtn', function () {
+                var docId = $(this).data('docid');
+                $('#doctorSelect').val(docId);
+                $('#smartSuggestion').addClass('d-none');
+                // Kích hoạt kiểm tra lại một lần nữa cho chắc chắn
+                $('#doctorSelect').trigger('change');
+            });
+    });</script>
+}

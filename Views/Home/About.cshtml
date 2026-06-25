@@ -1,0 +1,89 @@
+﻿@model IEnumerable<BenhvienSmart.Models.Doctor>
+
+@{
+    ViewData["Title"] = "Giới thiệu BenhvienSmart";
+}
+
+<div class="bg-primary text-white py-5 mb-5 shadow-sm bg-gradient">
+    <div class="container text-center py-3">
+        <h1 class="display-4 fw-bold">Về BenhvienSmart</h1>
+        <p class="lead opacity-75">Tiên phong trong ứng dụng công nghệ điều phối y tế thông minh tại Việt Nam.</p>
+    </div>
+</div>
+
+<div class="container">
+    <div class="row align-items-center mb-5">
+        <div class="col-md-6 order-2 order-md-1">
+            <h2 class="text-primary fw-bold mb-4">Cơ sở hạ tầng hiện đại</h2>
+            <p class="text-muted lh-lg">
+                BenhvienSmart được đầu tư hệ thống trang thiết bị chẩn đoán hình ảnh tiên tiến nhất,
+                từ máy MRI 3.0 Tesla, CT 640 dãy đến hệ thống phòng mổ hybrid đạt tiêu chuẩn quốc tế.
+            </p>
+            <ul class="list-unstyled">
+                <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> Hệ thống quản lý hồ sơ bệnh án điện tử (EMR)</li>
+                <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> Phòng chờ tiêu chuẩn 5 sao với không gian xanh</li>
+                <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> Hệ thống xét nghiệm tự động hóa hoàn toàn</li>
+            </ul>
+        </div>
+        <div class="col-md-6 text-center order-1 order-md-2 mb-4 mb-md-0">
+            <img src="https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?auto=format&fit=crop&w=800&q=80"
+                 class="img-fluid rounded-4 shadow-lg" alt="Hospital Infrastructure">
+        </div>
+    </div>
+
+    <hr class="my-5 opacity-25">
+
+    <div class="text-center mb-5">
+        <h2 class="text-primary fw-bold">Đội ngũ chuyên gia</h2>
+        <p class="text-muted">Tập hợp những bác sĩ có tâm và có tầm, luôn sẵn lòng vì sức khỏe bệnh nhân.</p>
+    </div>
+
+    <div class="row g-4 mb-5">
+        @foreach (var doctor in Model)
+        {
+            <div class="col-md-6 col-lg-3">
+                <div class="card h-100 shadow-sm border-0 doctor-card rounded-4">
+                    <div class="bg-light text-center py-4 position-relative">
+                        @if (!string.IsNullOrEmpty(doctor.ImageUrl))
+                        {
+                            <img src="@doctor.ImageUrl" class="rounded-circle shadow-sm" style="width: 100px; height: 100px; object-fit: cover;" alt="@doctor.FullName">
+                        }
+                        else
+                        {
+                            <div class="rounded-circle bg-white d-inline-flex align-items-center justify-content-center shadow-sm" style="width: 100px; height: 100px;">
+                                <i class="bi bi-person-badge text-primary" style="font-size: 3rem;"></i>
+                            </div>
+                        }
+                        <span class="badge bg-success position-absolute bottom-0 start-50 translate-middle-x mb-2 shadow-sm">Đang công tác</span>
+                    </div>
+
+                    <div class="card-body text-center d-flex flex-column">
+                        <h5 class="card-title fw-bold text-dark mb-1">@doctor.FullName</h5>
+                        <p class="card-text text-primary small fw-bold text-uppercase mb-2">@doctor.Specialty</p>
+
+                        <p class="card-text text-muted small flex-grow-1">
+                            @(doctor.Description ?? "Chuyên gia giàu kinh nghiệm trong lĩnh vực " + doctor.Specialty + " tại BenhvienSmart.")
+                        </p>
+                    </div>
+
+                    <div class="card-footer bg-white border-0 text-center pb-4">
+                        <a asp-controller="Appointment" asp-action="Create" asp-route-doctorId="@doctor.Id" class="btn btn-primary rounded-pill px-4 shadow-sm fw-bold">
+                            <i class="bi bi-calendar-plus me-1"></i> Đặt lịch ngay
+                        </a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+<style>
+    .doctor-card {
+        transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.3s ease;
+    }
+
+        .doctor-card:hover {
+            transform: translateY(-12px);
+            box-shadow: 0 15px 30px rgba(13, 110, 253, 0.15) !important;
+        }
+</style>

@@ -1,0 +1,86 @@
+﻿@{
+    ViewData["Title"] = "Hướng dẫn sử dụng";
+}
+
+<div class="container mt-5 mb-5">
+    <div class="text-center mb-5">
+        <h2 class="fw-bold text-primary">HƯỚNG DẪN SỬ DỤNG HỆ THỐNG</h2>
+        <p class="text-muted">Chỉ với vài thao tác đơn giản để trải nghiệm dịch vụ y tế thông minh</p>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-md-3 text-center">
+            <div class="card h-100 border-0 shadow-sm rounded-4 p-3">
+                <div class="mb-3">
+                    <span class="badge bg-primary rounded-circle p-3 fs-4">1</span>
+                </div>
+                <h5 class="fw-bold">Đăng ký tài khoản</h5>
+                <p class="text-muted small">Tạo tài khoản cá nhân bằng số điện thoại để quản lý lịch khám bệnh của bạn.</p>
+                <i class="bi bi-person-plus text-primary fs-1"></i>
+            </div>
+        </div>
+
+        <div class="col-md-3 text-center">
+            <div class="card h-100 border-0 shadow-sm rounded-4 p-3">
+                <div class="mb-3">
+                    <span class="badge bg-primary rounded-circle p-3 fs-4">2</span>
+                </div>
+                <h5 class="fw-bold">Tìm kiếm Bác sĩ</h5>
+                <p class="text-muted small">Vào mục "Đội ngũ bác sĩ" để tìm hiểu chuyên môn và chọn người phù hợp.</p>
+                <i class="bi bi-search text-primary fs-1"></i>
+            </div>
+        </div>
+
+        <div class="col-md-3 text-center">
+            <div class="card h-100 border-0 shadow-sm rounded-4 p-3">
+                <div class="mb-3">
+                    <span class="badge bg-primary rounded-circle p-3 fs-4">3</span>
+                </div>
+                <h5 class="fw-bold">Đặt lịch khám</h5>
+                <p class="text-muted small">Chọn ngày giờ mong muốn và gửi yêu cầu. Hệ thống sẽ xác nhận ngay lập tức.</p>
+                <i class="bi bi-calendar-check text-primary fs-1"></i>
+            </div>
+        </div>
+
+        <div class="col-md-3 text-center">
+            <div class="card h-100 border-0 shadow-sm rounded-4 p-3">
+                <div class="mb-3">
+                    <span class="badge bg-primary rounded-circle p-3 fs-4">4</span>
+                </div>
+                <h5 class="fw-bold">Xem kết quả</h5>
+                <p class="text-muted small">Vào "Lịch khám của tôi" để xem chẩn đoán và đơn thuốc sau khi khám xong.</p>
+                <i class="bi bi-file-earmark-medical text-primary fs-1"></i>
+            </div>
+        </div>
+    </div>
+
+    <div class="mt-5 py-5 border-top">
+        <h3 class="fw-bold text-center mb-4">Các câu hỏi thường gặp</h3>
+        <div class="accordion mx-auto shadow-sm" id="faqAccordion" style="max-width: 800px;">
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#q1">
+                        Tôi có thể hủy lịch khám đã đặt không?
+                    </button>
+                </h2>
+                <div id="q1" class="accordion-collapse collapse show" data-bs-parent="#faqAccordion">
+                    <div class="accordion-body">
+                        Có, bạn có thể hủy lịch khám trong mục <strong>"Lịch khám của tôi"</strong> tối thiểu 2 giờ trước giờ hẹn.
+                    </div>
+                </div>
+            </div>
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#q2">
+                        Quên mật khẩu thì phải làm sao?
+                    </button>
+                </h2>
+                <div id="q2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                    <div class="accordion-body">
+                        Bạn nhấn vào nút "Quên mật khẩu" tại trang Đăng nhập và cung cấp Số điện thoại đã đăng ký để đặt lại mật khẩu mới.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

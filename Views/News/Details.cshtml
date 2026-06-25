@@ -1,0 +1,58 @@
+﻿@model BenhvienSmart.Models.News
+
+@{
+    ViewData["Title"] = Model.Title;
+}
+
+<div class="container mt-5 mb-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-9">
+            <nav aria-label="breadcrumb" class="mb-4">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Trang chủ</a></li>
+                    <li class="breadcrumb-item"><a asp-action="Index">Tin tức</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Chi tiết</li>
+                </ol>
+            </nav>
+
+            <article>
+                <h1 class="display-5 fw-bold text-dark mb-3">@Model.Title</h1>
+
+                <div class="d-flex align-items-center text-muted mb-4 border-bottom pb-3">
+                    <i class="bi bi-calendar3 me-2"></i>
+                    <span>Ngày đăng: @Model.PublishedDate.ToString("dd/MM/yyyy HH:mm")</span>
+                </div>
+
+                @if (!string.IsNullOrEmpty(Model.ImageUrl))
+                {
+                    <div class="mb-4">
+                        <img src="@Model.ImageUrl" class="img-fluid rounded shadow-sm w-100" style="max-height: 450px; object-fit: cover;" alt="@Model.Title">
+                    </div>
+                }
+
+                @if (!string.IsNullOrEmpty(Model.Summary))
+                {
+                    <p class="lead fw-bold text-secondary mb-4 italic" style="border-left: 4px solid #dee2e6; padding-left: 15px;">
+                        @Model.Summary
+                    </p>
+                }
+
+                <div class="content-body fs-5 text-dark lh-base" style="white-space: pre-line;">
+                    @Model.Content
+                </div>
+            </article>
+
+            <div class="mt-5 pt-4 border-top">
+                <a asp-action="Index" class="btn btn-outline-primary px-4">
+                    <i class="bi bi-arrow-left"></i> Xem tin khác
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .content-body {
+        text-align: justify;
+    }
+</style>

@@ -1,0 +1,82 @@
+﻿@model IEnumerable<BenhvienSmart.Models.News>
+
+@{
+    ViewData["Title"] = "Bản tin y tế - BenhvienSmart";
+}
+
+<div class="container mt-5 mb-5">
+    <div class="text-center mb-5">
+        <h2 class="text-primary fw-bold display-6">📰 Hoạt động & Thông báo</h2>
+        <p class="text-muted">Cập nhật những thông tin y khoa và hoạt động mới nhất từ hệ thống</p>
+        <hr class="mx-auto" style="width: 100px; height: 3px; background-color: #0d6efd;">
+    </div>
+
+    <div class="row">
+        @if (Model != null && Model.Any())
+        {
+            @foreach (var item in Model)
+            {
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100 shadow-sm border-0 news-card">
+                        <div class="position-relative overflow-hidden">
+                            <img src="@(string.IsNullOrEmpty(item.ImageUrl) ? "https://via.placeholder.com/400x250?text=BenhvienSmart" : item.ImageUrl)"
+                                 class="card-img-top"
+                                 alt="@item.Title"
+                                 style="height: 220px; object-fit: cover; transition: transform 0.3s;">
+                        </div>
+
+                        <div class="card-body">
+                            <div class="d-flex align-items-center mb-2">
+                                <i class="bi bi-calendar-event text-primary me-2"></i>
+                                <small class="text-muted">@item.PublishedDate.ToString("dd/MM/yyyy")</small>
+                            </div>
+
+                            <h5 class="card-title fw-bold">
+                                <a asp-action="Details" asp-route-id="@item.Id" class="text-decoration-none text-dark hover-blue">
+                                    @item.Title
+                                </a>
+                            </h5>
+
+                            <p class="card-text text-muted">
+                                @(item.Summary?.Length > 100 ? item.Summary.Substring(0, 100) + "..." : item.Summary)
+                            </p>
+                        </div>
+
+                        <div class="card-footer bg-white border-0 pb-3">
+                            <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-outline-primary btn-sm w-100 fw-bold">
+                                Đọc chi tiết
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            <div class="col-12 text-center py-5">
+                <i class="bi bi-journal-x display-1 text-light"></i>
+                <p class="text-muted fst-italic mt-3">Hiện chưa có tin tức hoặc thông báo mới.</p>
+                <a asp-controller="Home" asp-action="Index" class="btn btn-primary mt-3">Quay lại trang chủ</a>
+            </div>
+        }
+    </div>
+</div>
+
+<style>
+    .news-card {
+        transition: all 0.3s ease;
+    }
+
+        .news-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.12) !important;
+        }
+
+            .news-card:hover img {
+                transform: scale(1.1);
+            }
+
+    .hover-blue:hover {
+        color: #0d6efd !important;
+    }
+</style>

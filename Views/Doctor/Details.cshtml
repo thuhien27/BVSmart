@@ -1,0 +1,51 @@
+﻿@model BenhvienSmart.Models.Doctor
+
+@{
+    ViewData["Title"] = "Chi tiết Bác sĩ";
+}
+
+<div class="container mt-4">
+    <div class="card shadow border-0" style="max-width: 800px; margin: auto;">
+        <div class="card-header bg-info text-white">
+            <h4 class="mb-0">Thông tin chi tiết: @Model.FullName</h4>
+        </div>
+        <div class="card-body p-4">
+            <div class="row">
+                <div class="col-md-4 text-center mb-3">
+                    <i class="bi bi-person-bounding-box" style="font-size: 6rem; color: #dee2e6;"></i>
+                </div>
+                <div class="col-md-8">
+                    <table class="table table-borderless">
+                        <tr>
+                            <th style="width: 150px;">Họ tên:</th>
+                            <td>@Model.FullName</td>
+                        </tr>
+                        <tr>
+                            <th>Chuyên khoa:</th>
+                            <td><span class="badge bg-primary">@Model.Specialization</span></td>
+                        </tr>
+                        <tr>
+                            <th>Email:</th>
+                            <td>@Model.Email</td>
+                        </tr>
+                        <tr>
+                            <th>Số điện thoại:</th>
+                            <td>@Model.PhoneNumber</td>
+                        </tr>
+                        <tr>
+                            <th>Trạng thái:</th>
+                            <td>
+                                @(Model.IsActive ? "Đang công tác tại bệnh viện" : "Đã nghỉ việc / Tạm nghỉ")
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            <hr />
+            <div class="text-end">
+                <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning text-white">Chỉnh sửa</a>
+                <a asp-action="Index" class="btn btn-secondary">Quay lại danh sách</a>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,106 @@
+﻿@using Microsoft.AspNetCore.Http
+@using BenhvienSmart.Models
+@{
+    ViewData["Title"] = "Bảng điều khiển Bác sĩ";
+    // Ép kiểu dữ liệu ngay từ đầu để code bên dưới ngắn gọn hơn
+    var appointments = ViewBag.Appointments as IEnumerable<Appointment> ?? new List<Appointment>();
+    var schedules = ViewBag.Schedules as IEnumerable<DoctorSchedule> ?? new List<DoctorSchedule>();
+    var patients = ViewBag.Patients as IEnumerable<string> ?? new List<string>();
+}
+
+<div class="container-fluid mt-4">
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Bảng điều khiển Bác sĩ: @Context.Session.GetString("UserName")</h1>
+    </div>
+
+    @* ... Phần Card Vị trí làm việc giữ nguyên ... *@
+
+    <div class="row">
+        <div class="col-xl-8 col-lg-7">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3 bg-primary text-white">
+                    <h6 class="m-0 font-weight-bold text-white">Lịch khám hôm nay (@DateTime.Now.ToString("dd/MM/yyyy"))</h6>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-hover">
+                            <thead class="thead-light">
+                                <tr>
+                                    <th>Giờ</th>
+                                    <th>Bệnh nhân</th>
+                                    <th>Triệu chứng</th>
+                                    <th>Gợi ý AI</th>
+                                    <th>Thao tác</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in appointments)
+                                {
+                                    <tr>
+                                        <td>@item.AppointmentDate.ToString("HH:mm")</td>
+                                        <td><strong>@item.PatientName</strong></td>
+                                        <td><small>@item.Note</small></td>
+                                        <td>
+                                            @if (!string.IsNullOrEmpty(item.AISuggestion))
+                                            {
+                                                <span class="text-success small"><i class="fas fa-robot"></i> @item.AISuggestion</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="text-muted small italic">Chưa có dữ liệu</span>
+                                            }
+                                        </td>
+                                        <td>
+                                            @* Đảm bảo hàm Exam đã tồn tại trong Controller *@
+                                            <a href="/Doctor/Exam/@item.Id" class="btn btn-sm btn-success btn-block">Khám bệnh</a>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card shadow mb-4">
+                <div class="card-header py-3 bg-info text-white">
+                    <h6 class="m-0 font-weight-bold text-white">Bệnh nhân đã phụ trách gần đây</h6>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        @foreach (var p in patients)
+                        {
+                            <div class="col-md-4 mb-2">
+                                <div class="p-2 border rounded bg-light text-center small">@p</div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-4 col-lg-5">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3 bg-warning text-dark">
+                    <h6 class="m-0 font-weight-bold"><i class="fas fa-calendar-alt"></i> Lịch trực sắp tới</h6>
+                </div>
+                <div class="card-body">
+                    @if (schedules.Any())
+                    {
+                        foreach (var s in schedules)
+                        {
+                            <div class="mb-3 border-bottom pb-2">
+                                <strong>@s.WorkDate.ToString("dd/MM/yyyy")</strong>:
+                                <span class="badge badge-primary float-right">@s.Shift</span>
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <p class="text-muted text-center small">Chưa có lịch trực được phân công.</p>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

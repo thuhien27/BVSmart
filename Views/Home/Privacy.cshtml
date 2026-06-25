@@ -1,0 +1,59 @@
+﻿@{
+    ViewData["Title"] = "Chính sách bảo mật";
+}
+
+<div class="container mt-5 mb-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-9">
+            <div class="text-center mb-5">
+                <i class="bi bi-shield-lock text-primary display-1"></i>
+                <h1 class="fw-bold mt-3">CHÍNH SÁCH BẢO MẬT THÔNG TIN</h1>
+                <p class="text-muted">Cập nhật lần cuối: @DateTime.Now.ToString("dd/MM/yyyy")</p>
+            </div>
+
+            <div class="card shadow-sm border-0 rounded-4 p-4 p-md-5">
+                <div class="mb-4">
+                    <h4 class="fw-bold text-primary"><i class="bi bi-1-circle me-2"></i>Mục đích thu thập thông tin</h4>
+                    <p class="text-secondary">
+                        BenhvienSmart thu thập thông tin cá nhân của bạn (Họ tên, số điện thoại, lịch sử khám bệnh) nhằm mục đích:
+                    </p>
+                    <ul class="text-secondary">
+                        <li>Đặt lịch hẹn khám bệnh trực tuyến nhanh chóng.</li>
+                        <li>Cung cấp kết quả chẩn đoán và đơn thuốc điện tử.</li>
+                        <li>Gửi thông báo nhắc lịch tái khám hoặc các chương trình ưu đãi y tế.</li>
+                    </ul>
+                </div>
+
+                <div class="mb-4">
+                    <h4 class="fw-bold text-primary"><i class="bi bi-2-circle me-2"></i>Phạm vi sử dụng thông tin</h4>
+                    <p class="text-secondary">
+                        Thông tin của bạn chỉ được sử dụng nội bộ trong hệ thống của BenhvienSmart và các y bác sĩ trực tiếp thăm khám. Chúng tôi cam kết <strong>không chia sẻ, bán hoặc cho thuê</strong> thông tin cá nhân của bạn cho bất kỳ bên thứ ba nào.
+                    </p>
+                </div>
+
+                <div class="mb-4">
+                    <h4 class="fw-bold text-primary"><i class="bi bi-3-circle me-2"></i>Bảo mật dữ liệu y tế</h4>
+                    <p class="text-secondary">
+                        Dữ liệu bệnh án điện tử được mã hóa và lưu trữ trên hệ thống máy chủ an toàn. Chúng tôi sử dụng công nghệ SSL (Secure Sockets Layer) để đảm bảo thông tin truyền tải trên internet không bị đánh cắp.
+                    </p>
+                    <div class="alert alert-info border-0">
+                        <i class="bi bi-info-circle-fill me-2"></i>
+                        Người dùng có trách nhiệm tự bảo mật mật khẩu cá nhân để tránh rò rỉ thông tin lịch sử khám.
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <h4 class="fw-bold text-primary"><i class="bi bi-4-circle me-2"></i>Quyền lợi của người dùng</h4>
+                    <p class="text-secondary">
+                        Bạn có quyền truy cập, chỉnh sửa thông tin cá nhân hoặc yêu cầu hệ thống xóa lịch sử khám của mình bằng cách liên hệ với bộ phận hỗ trợ kỹ thuật qua Hotline: <strong>1900-xxxx</strong>.
+                    </p>
+                </div>
+
+                <div class="text-center mt-5 border-top pt-4">
+                    <p class="small text-muted italic">Cảm ơn bạn đã tin tưởng sử dụng dịch vụ của BenhvienSmart.</p>
+                    <a asp-action="Index" class="btn btn-outline-primary rounded-pill px-4">Quay lại trang chủ</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

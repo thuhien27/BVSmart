@@ -1,0 +1,60 @@
+﻿@model BenhvienSmart.Models.Appointment
+
+@{
+    ViewData["Title"] = "Thực hiện khám bệnh";
+}
+
+<div class="container mt-4">
+    <div class="card shadow-sm border-0">
+        <div class="card-header bg-primary text-white p-3">
+            <h4 class="mb-0"><i class="bi bi-person-badge"></i> Phiếu Khám Bệnh</h4>
+        </div>
+        <div class="card-body p-4">
+            <div class="row mb-4">
+                <div class="col-md-6 border-end">
+                    <h5 class="text-secondary border-bottom pb-2">Thông tin bệnh nhân</h5>
+                    <p><strong>Họ và tên:</strong> @Model.PatientName</p>
+                    <p><strong>Ngày hẹn:</strong> @Model.AppointmentDate.ToString("dd/MM/yyyy HH:mm")</p>
+                    <p>
+                        <strong>Mức độ ưu tiên:</strong>
+                        <span class="badge @(Model.Priority >= 4 ? "bg-danger" : "bg-info")">
+                            Cấp độ @Model.Priority
+                        </span>
+                    </p>
+                </div>
+                <div class="col-md-6 ps-4">
+                    <h5 class="text-secondary border-bottom pb-2">Thông tin bác sĩ</h5>
+                    <p><strong>Bác sĩ phụ trách:</strong> @Model.Doctor?.FullName</p>
+                    <p><strong>Phòng khám:</strong> @ViewBag.DoctorRoom</p>
+                </div>
+            </div>
+
+            <hr />
+
+            <form asp-action="UpdateDiagnosis" method="post">
+                <input type="hidden" name="appointmentId" value="@Model.Id" />
+
+                <div class="form-group mb-3">
+                    <label class="fw-bold mb-2"><i class="bi bi-clipboard2-pulse"></i> Chẩn đoán bệnh</label>
+                    <textarea name="diagnosis" class="form-control" rows="3" placeholder="Nhập kết luận chẩn đoán..." required>@Model.Diagnosis</textarea>
+                </div>
+
+                <div class="form-group mb-4">
+                    <label class="fw-bold mb-2"><i class="bi bi-chat-left-text"></i> Lời dặn của bác sĩ</label>
+                    <textarea name="doctorNote" class="form-control" rows="3" placeholder="Nhập đơn thuốc hoặc dặn dò tái khám...">@Model.DoctorNote</textarea>
+                </div>
+
+                <div class="d-flex gap-3">
+                    <button type="submit" class="btn btn-success px-4 py-2">
+                        <i class="bi bi-check-circle"></i> Hoàn thành khám & Lưu kết quả
+                    </button>
+                    <a asp-action="Dashboard" class="btn btn-outline-secondary px-4 py-2">Quay lại</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

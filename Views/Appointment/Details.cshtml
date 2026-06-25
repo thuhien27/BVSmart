@@ -1,0 +1,31 @@
+﻿@model BenhvienSmart.Models.Appointment
+
+<div class="container mt-4">
+    <div class="card shadow">
+        <div class="card-header bg-primary text-white">
+            <h4>Hồ sơ bệnh nhân: @Model.PatientName</h4>
+        </div>
+        <div class="card-body">
+            <p><strong>Bác sĩ:</strong> @Model.Doctor?.FullName</p>
+            <form asp-action="UpdateNote" method="post">
+                <input type="hidden" name="id" value="@Model.Id" />
+
+                <div class="mb-3">
+                    <label class="form-label fw-bold text-danger">Chẩn đoán bệnh:</label>
+                    <input type="text" name="diagnosis" class="form-control"
+                           placeholder="Ví dụ: Viêm phế quản, Đau dạ dày..." value="@Model.Diagnosis" required />
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Mô tả bệnh & Đơn thuốc:</label>
+                    <textarea name="doctorNote" class="form-control" rows="4"
+                              placeholder="Nhập chi tiết tình trạng bệnh và thuốc cần uống...">@Model.DoctorNote</textarea>
+                </div>
+
+                <button type="submit" class="btn btn-success">
+                    <i class="bi bi-save"></i> Lưu hồ sơ và Kết thúc khám
+                </button>
+            </form>
+        </div>
+    </div>
+</div>

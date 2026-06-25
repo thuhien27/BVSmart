@@ -1,0 +1,49 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(RunConfiguration)' == 'https' " />
+  <PropertyGroup Condition=" '$(RunConfiguration)' == 'http' " />
+  <ItemGroup>
+    <None Remove="Services\" />
+    <None Remove="Data\" />
+    <None Remove="Views\Appointment\" />
+    <None Remove="Views\Doctor\" />
+    <None Remove="Views\News\" />
+    <None Remove="Views\Admin\" />
+    <None Remove="Views\Department\" />
+    <None Remove="Views\Patient\" />
+    <None Remove="Views\System\" />
+    <None Remove="Views\DoctorSchedule\" />
+    <None Remove="Views\Staff\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Services\" />
+    <Folder Include="Data\" />
+    <Folder Include="Views\Appointment\" />
+    <Folder Include="Views\Doctor\" />
+    <Folder Include="Views\News\" />
+    <Folder Include="Views\Admin\" />
+    <Folder Include="Views\Department\" />
+    <Folder Include="Views\Patient\" />
+    <Folder Include="Views\System\" />
+    <Folder Include="Views\DoctorSchedule\" />
+    <Folder Include="Views\Staff\" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.20">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.20" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.14" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="7.0.20" />
+    <PackageReference Include="MailKit" Version="4.14.1" />
+    <PackageReference Include="Azure.AI.OpenAI" Version="2.1.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="7.0.20" />
+  </ItemGroup>
+</Project>

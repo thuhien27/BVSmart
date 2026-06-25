@@ -1,0 +1,96 @@
+﻿@model IEnumerable<BenhvienSmart.Models.Appointment>
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold text-primary mb-0"><i class="bi bi-calendar2-check"></i> Lịch khám của tôi</h2>
+        <a asp-action="Index" class="btn btn-primary btn-sm shadow-sm">
+            <i class="bi bi-plus-circle"></i> Đặt lịch mới
+        </a>
+    </div>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show shadow-sm border-0">
+            <i class="bi bi-check-circle-fill me-2"></i> @TempData["Success"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <div class="table-responsive shadow-sm rounded-3">
+        <table class="table table-hover bg-white mb-0 align-middle">
+            <thead class="table-primary">
+                <tr>
+                    <th class="ps-3">Ngày khám</th>
+                    <th>Bác sĩ</th>
+                    <th>Trạng thái</th>
+                    <th class="text-center">Thao tác</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (!Model.Any())
+                {
+                    <tr>
+                        <td colspan="4" class="text-center py-5 text-muted">
+                            <i class="bi bi-calendar-x display-4 d-block mb-2"></i>
+                            Bạn chưa có lịch khám nào.
+                        </td>
+                    </tr>
+                }
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td class="ps-3 fw-bold text-secondary">
+                            @item.AppointmentDate.ToString("dd/MM/yyyy")
+                            <small class="d-block text-muted">@item.AppointmentDate.ToString("HH:mm")</small>
+                        </td>
+                        <td>
+                            <div class="d-flex align-items-center">
+                                <i class="bi bi-person-badge me-2 text-info"></i>
+                                @(item.Doctor?.FullName ?? "Đang chờ phân công")
+                            </div>
+                        </td>
+                        <td>
+                            @if (item.Status == AppointmentStatus.Confirmed)
+                            {
+                                <span class="badge rounded-pill bg-success px-3">Đã xác nhận</span>
+                            }
+                            else if (item.Status == AppointmentStatus.Cancelled)
+                            {
+                                <span class="badge rounded-pill bg-danger px-3">Đã hủy</span>
+                            }
+                            else
+                            {
+                                <span class="badge rounded-pill bg-secondary px-3">@item.Status</span>
+                            }
+                        </td>
+                        <td class="text-center">
+                          
+                            @if (item.Status != AppointmentStatus.Cancelled)
+                            {
+                                <div class="btn-group shadow-sm">
+                                    
+                                    <a asp-action="EditAppointment" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary">
+                                        <i class="bi bi-pencil"></i> Sửa
+                                    </a>
+
+                                  
+                                    <form asp-action="CancelAppointment" asp-route-id="@item.Id" method="post"
+                                          onsubmit="return confirm('⚠️ Bạn có chắc chắn muốn hủy lịch khám này không?')" class="d-inline">
+                                        
+                                        <button type="submit" class="btn btn-sm btn-outline-danger">
+                                            <i class="bi bi-trash"></i> Hủy
+                                        </button>
+                                    </form>
+                                </div>
+                            }
+                            else
+                            {
+                                <span class="text-muted small italic">Không khả dụng</span>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

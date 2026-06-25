@@ -1,0 +1,61 @@
+﻿@model BenhvienSmart.Models.User
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-5">
+            <div class="card shadow border-0">
+                <div class="card-body p-5">
+                    <h2 class="text-center fw-bold text-primary mb-4">Đăng ký tài khoản</h2>
+
+                    <form asp-action="Register" method="post">
+                        <div class="mb-3">
+                            <label class="form-label">Họ và tên</label>
+                            <input asp-for="FullName" class="form-control" placeholder="Nguyễn Văn A" />
+                            <span asp-validation-for="FullName" class="text-danger small"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Tên tài khoản</label>
+                            <input asp-for="Username" class="form-control" placeholder="username123" />
+                            <span asp-validation-for="Username" class="text-danger small"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Mật khẩu</label>
+                            <input asp-for="Password" type="password" class="form-control" placeholder="******" />
+                            <span asp-validation-for="Password" class="text-danger small"></span>
+                        </div>
+                        @* --- PHẦN THÊM MỚI: BẮT BUỘC NHẬP NGÀY SINH --- *@
+                        <div class="mb-3">
+                            <label class="form-label">Ngày sinh</label>
+                            <input asp-for="DateOfBirth" type="date" class="form-control" required />
+                            <span asp-validation-for="DateOfBirth" class="text-danger small"></span>
+                        </div>
+
+                        @* --- PHẦN THÊM MỚI: BẮT BUỘC CHỌN GIỚI TÍNH --- *@
+                        <div class="mb-3">
+                            <label class="form-label">Giới tính</label>
+                            <select asp-for="Gender" class="form-control" required>
+                                <option value="">-- Chọn giới tính --</option>
+                                <option value="Nam">Nam</option>
+                                <option value="Nữ">Nữ</option>
+                                <option value="Khác">Khác</option>
+                            </select>
+                            <span asp-validation-for="Gender" class="text-danger small"></span>
+                        </div>
+                        <div class="mb-3">
+                            <label>Email nhận thông báo</label>
+                            <input asp-for="Email" type="email" class="form-control" placeholder="example@gmail.com" required />
+                        </div>
+
+                        <button type="submit" class="btn btn-primary w-100 fw-bold py-2 mt-3">ĐĂNG KÝ NGAY</button>
+                    </form>
+
+                    <div class="text-center mt-4">
+                        <p class="text-muted small">Đã có tài khoản? <a asp-action="Login" class="text-decoration-none">Đăng nhập</a></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

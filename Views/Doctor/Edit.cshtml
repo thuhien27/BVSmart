@@ -1,0 +1,64 @@
+﻿@model BenhvienSmart.Models.Doctor
+
+@{
+    ViewData["Title"] = "Chỉnh sửa thông tin Bác sĩ";
+}
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow border-0">
+                <div class="card-header bg-warning text-white">
+                    <h4 class="mb-0"><i class="bi bi-pencil-square"></i> Chỉnh sửa Bác sĩ</h4>
+                </div>
+                <div class="card-body p-4">
+                    <form asp-action="Edit" method="post">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" asp-for="Id" />
+
+                        <div class="mb-3">
+                            <label asp-for="FullName" class="form-label fw-bold">Họ và Tên</label>
+                            <input asp-for="FullName" class="form-control" />
+                            <span asp-validation-for="FullName" class="text-danger small"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Specialization" class="form-label fw-bold">Chuyên khoa</label>
+                            <select asp-for="Specialization" class="form-select">
+                                <option value="Nội tổng quát">Nội tổng quát</option>
+                                <option value="Ngoại tổng quát">Ngoại tổng quát</option>
+                                <option value="Nhi khoa">Nhi khoa</option>
+                                <option value="Sản phụ khoa">Sản phụ khoa</option>
+                                <option value="Tai Mũi Họng">Tai Mũi Họng</option>
+                                <option value="Răng Hàm Mặt">Răng Hàm Mặt</option>
+                                <option value="Mắt">Mắt</option>
+                                <option value="Da liễu">Da liễu</option>
+                                <option value="Tim mạch">Tim mạch</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Email" class="form-label fw-bold">Email</label>
+                            <input asp-for="Email" class="form-control" />
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="PhoneNumber" class="form-label fw-bold">Số điện thoại</label>
+                            <input asp-for="PhoneNumber" class="form-control" />
+                        </div>
+
+                        <div class="mb-3 form-check form-switch">
+                            <input asp-for="IsActive" class="form-check-input" type="checkbox" />
+                            <label class="form-check-label" asp-for="IsActive">Đang làm việc</label>
+                        </div>
+
+                        <div class="d-grid gap-2 mt-4">
+                            <button type="submit" class="btn btn-warning text-white btn-lg">Lưu thay đổi</button>
+                            <a asp-action="Index" class="btn btn-outline-secondary">Hủy bỏ</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,148 @@
+﻿@model IEnumerable<BenhvienSmart.Models.Appointment>
+
+@{
+    ViewData["Title"] = "Bảng điều khiển quản trị";
+}
+
+<div class="container-fluid mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="text-primary fw-bold"><i class="bi bi-speedometer2"></i> Dashboard </h2>
+        <span class="badge bg-info text-dark p-2">Hôm nay: @DateTime.Now.ToString("dd/MM/yyyy")</span>
+    </div>
+
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="card bg-primary text-white shadow">
+                <div class="card-body">
+                    <h6 class="card-title text-uppercase small">Tổng ca đăng ký</h6>
+                    <h2 class="display-6 fw-bold">@ViewBag.TotalAppointments</h2>
+                    <i class="bi bi-person-badge fs-1 opacity-25 float-end" style="margin-top: -40px;"></i>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card bg-success text-white shadow">
+                <div class="card-body">
+                    <h6 class="card-title text-uppercase small">Bác sĩ đang hoạt động</h6>
+                    <h2 class="display-6 fw-bold">@ViewBag.ActiveDoctors</h2>
+                    <i class="bi bi-person-check fs-1 opacity-25 float-end" style="margin-top: -40px;"></i>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card bg-dark text-white shadow border-start border-warning border-5">
+                <div class="card-body">
+                    <h6 class="card-title text-uppercase small">Tải trọng hệ thống (Smart Load)</h6>
+                    @* Đã fix hiển thị LoadFactor *@
+                    <h2 class="display-6 fw-bold">@ViewBag.LoadFactor%</h2>
+                    <div class="progress mt-2" style="height: 10px;">
+                        <div class="progress-bar bg-warning" role="progressbar" style="width: @ViewBag.LoadFactor%"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card shadow mb-4">
+                <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center border-bottom border-danger">
+                    <h5 class="m-0 font-weight-bold text-danger"><i class="bi bi-exclamation-octagon"></i> Danh sách ca khẩn cấp (Ưu tiên cao)</h5>
+                    <a asp-controller="Appointment" asp-action="Index" class="btn btn-sm btn-outline-primary">Xem tất cả</a>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Bệnh nhân</th>
+                                    <th>Bác sĩ</th>
+                                    <th>Thời gian</th>
+                                    <th>Mức ưu tiên</th>
+                                    <th>Thao tác</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (Model != null && Model.Any())
+                                {
+                                    @foreach (var item in Model)
+                                    {
+                                        <tr>
+                                            <td class="fw-bold">@item.PatientName</td>
+                                            <td>
+                                                @if (item.Doctor != null)
+                                                {
+                                                    <span class="text-dark"><i class="bi bi-person-badge me-1"></i>@item.Doctor.FullName</span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="text-muted fst-italic">Chưa phân công</span>
+                                                }
+                                            </td>
+                                            <td>@item.AppointmentDate.ToString("HH:mm dd/MM")</td>
+                                            <td>
+                                                <span class="badge @(item.Priority == 5 ? "bg-danger" : "bg-warning text-dark") shadow-sm">
+                                                    Cấp độ @item.Priority
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <a asp-controller="Appointment" asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-info text-white shadow-sm">Xử lý</a>
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+                                else
+                                {
+                                    <tr>
+                                        <td colspan="5" class="text-center py-4 text-muted">
+                                            <i class="bi bi-check-circle text-success fs-3 d-block mb-2"></i>
+                                            Hiện chưa có ca khẩn cấp nào cần xử lý.
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card shadow mb-4">
+                <div class="card-header bg-white py-3">
+                    <h5 class="m-0 font-weight-bold text-dark text-center">Tiện ích quản trị</h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-grid gap-3">
+                        @* ĐÃ SỬA: Chuyển sang thẻ <a> và thêm đường dẫn controller *@
+                        <a asp-controller="Statistics" asp-action="ExportDailyReport" class="btn btn-outline-primary p-3 text-start shadow-sm hover-shadow">
+                            <i class="bi bi-file-earmark-spreadsheet me-2"></i> Xuất báo cáo ngày
+                        </a>
+                        
+                        <button class="btn btn-outline-secondary p-3 text-start shadow-sm hover-shadow">
+                            <i class="bi bi-gear me-2"></i> Cấu hình tham số Smart
+                        </button>
+
+                        <div class="alert alert-info small shadow-sm border-0 bg-light-info mt-2">
+                            <i class="bi bi-info-circle-fill me-1"></i>
+                            <strong>Ghi chú Smart:</strong> Tải trọng hệ thống dựa trên tỉ lệ giữa tổng số ca khám và năng lực xử lý của bác sĩ hiện có.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .hover-shadow:hover {
+        box-shadow: 0 .5rem 1rem rgba(0,0,0,.15) !important;
+        transform: translateY(-2px);
+        transition: all 0.2s ease;
+    }
+
+    .bg-light-info {
+        background-color: #e7f3ff;
+        color: #004085;
+    }
+</style>
